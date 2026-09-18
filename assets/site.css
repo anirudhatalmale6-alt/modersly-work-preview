@@ -1,0 +1,361 @@
+/* Modersly — one stylesheet, no framework, no font loaded from another
+   domain. The look he asked for: modern studio, black, large type, motion
+   used sparingly.
+
+   MOTION IS OPT-OUT AWARE. Everything that moves is disabled under
+   prefers-reduced-motion. An agency site that ignores that setting is
+   advertising that it does not know the platform it sells. */
+
+:root{
+  --noir:#050506;
+  --noir2:#0B0B0D;
+  --panneau:#111114;
+  --panneau2:#17171B;
+  --trait:#232328;
+  --trait-f:#33333A;
+  --txt:#F7F7F8;
+  --gris:#9A9AA4;
+  --gris-f:#6C6C76;
+  --accent:#C8FF4D;
+  --accent-f:#B4EA33;
+  --accent-c:rgba(200,255,77,.10);
+  --ambre:#F5B544;
+  --ambre-c:rgba(245,181,68,.09);
+  --ambre-t:rgba(245,181,68,.32);
+  --rouge:#FF6B6B;
+  --rouge-c:rgba(255,107,107,.08);
+  --rouge-t:rgba(255,107,107,.28);
+  --ui:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --voile:rgba(5,5,6,.72);
+  --lueur:.16;
+  --r:16px;
+}
+
+/* ---- LE MODE CLAIR -------------------------------------------------------
+   Le noir reste le defaut : c'est ce qu'il a demande. Le clair s'active de
+   deux facons, et la seconde l'emporte toujours sur la premiere :
+     1. le reglage du systeme du visiteur (prefers-color-scheme) ;
+     2. son choix explicite sur le site, garde d'une page a l'autre.
+   Le `:not([data-theme])` est ce qui rend cet ordre correct : sans lui, un
+   visiteur en systeme clair ne pourrait jamais choisir le noir, son systeme
+   reprendrait la main a chaque page.
+
+   L'accent lime est illisible en texte sur blanc (contraste ~1,4:1). Le mode
+   clair prend donc un vert fonce pour le TEXTE et les liens, et garde le lime
+   pour les aplats et le point du logo, ou il est decoratif. */
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]){
+    --noir:#FFFFFF; --noir2:#F5F7FA; --panneau:#FFFFFF; --panneau2:#F2F4F8;
+    --trait:#E3E7ED; --trait-f:#CBD2DC;
+    --txt:#0B0C0F; --gris:#565D6B; --gris-f:#7B8496;
+    --accent:#3F7A00; --accent-f:#2F5C00; --accent-c:rgba(63,122,0,.10);
+    --ambre:#8A5A05; --ambre-c:rgba(245,181,68,.16); --ambre-t:#E8C27A;
+    --rouge:#B42318; --rouge-c:rgba(180,35,24,.06); --rouge-t:#F4C7C3;
+    --voile:rgba(255,255,255,.78); --lueur:.05;
+  }
+}
+:root[data-theme="light"]{
+  --noir:#FFFFFF; --noir2:#F5F7FA; --panneau:#FFFFFF; --panneau2:#F2F4F8;
+  --trait:#E3E7ED; --trait-f:#CBD2DC;
+  --txt:#0B0C0F; --gris:#565D6B; --gris-f:#7B8496;
+  --accent:#3F7A00; --accent-f:#2F5C00; --accent-c:rgba(63,122,0,.10);
+  --ambre:#8A5A05; --ambre-c:rgba(245,181,68,.16); --ambre-t:#E8C27A;
+  --rouge:#B42318; --rouge-c:rgba(180,35,24,.06); --rouge-t:#F4C7C3;
+  --voile:rgba(255,255,255,.78); --lueur:.05;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{scroll-padding-top:92px;scroll-behavior:smooth}
+body{background:var(--noir);color:var(--txt);font-family:var(--ui);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden}
+a{color:var(--accent)}
+img{max-width:100%}
+.wrap{max-width:1240px;margin:0 auto;padding:0 26px}
+
+/* ---- bandeau ---- */
+.avert{background:var(--ambre-c);border-bottom:1px solid var(--ambre-t);
+  color:var(--ambre);font-size:13px;padding:9px 0}
+.avert code{font-family:var(--mono);font-size:12px}
+.avert a{color:var(--ambre)}
+
+/* ---- header ---- */
+.top{position:sticky;top:0;z-index:50;background:var(--voile);
+  backdrop-filter:saturate(1.5) blur(14px);border-bottom:1px solid var(--trait)}
+.bar{display:flex;align-items:center;gap:28px;padding:16px 26px;flex-wrap:wrap}
+/* La marque est le LOGO, pas du texte : les lettres sont des courbes, donc
+   elles ont la meme forme partout, y compris chez qui n'a pas la police. */
+.marque{display:flex;align-items:center;text-decoration:none;line-height:0}
+.marque img{width:150px;height:auto;display:block}
+@media (max-width:660px){.marque img{width:124px}}
+/* ---- le bouton clair / sombre ---- */
+.bascule{margin-left:auto;background:transparent;border:1px solid var(--trait-f);
+  color:var(--gris);border-radius:999px;width:38px;height:38px;cursor:pointer;
+  display:grid;place-items:center;padding:0;flex:0 0 38px;order:3}
+.bascule:hover{color:var(--txt);border-color:var(--txt)}
+.bascule svg{width:17px;height:17px;fill:currentColor}
+/* Chaque icone ne s'affiche que dans son mode : la lune quand on est en
+   clair (« passer au sombre »), le soleil quand on est en sombre. */
+.bascule .lune{display:none}
+:root[data-theme="light"] .bascule .lune{display:block}
+:root[data-theme="light"] .bascule .soleil{display:none}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]) .bascule .lune{display:block}
+  :root:not([data-theme]) .bascule .soleil{display:none}
+}
+
+/* ---- le logo suit le mode ---- */
+.marque .clair{display:none}
+:root[data-theme="light"] .marque .clair{display:block}
+:root[data-theme="light"] .marque .sombre{display:none}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]) .marque .clair{display:block}
+  :root:not([data-theme]) .marque .sombre{display:none}
+}
+
+/* ---- le ciel etoile n'a de sens que sur fond noir ---- */
+:root[data-theme="light"] .ciel{display:none}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]) .ciel{display:none}
+}
+
+.nav{margin-left:auto;display:flex;gap:24px;flex-wrap:wrap;font-size:14.5px;order:2}
+.nav a{color:var(--gris);text-decoration:none;padding:3px 0;
+  border-bottom:2px solid transparent}
+.nav a:hover{color:var(--txt)}
+.nav a[aria-current="page"]{color:var(--txt);border-bottom-color:var(--accent)}
+
+/* ---- hero ---- */
+.hero{position:relative;padding:96px 0 78px;overflow:hidden;
+  border-bottom:1px solid var(--trait)}
+.hero::before{content:"";position:absolute;inset:-30% -10% auto -10%;height:80%;
+  background:radial-gradient(60% 60% at 25% 30%, rgba(200,255,77,.10), transparent 70%),
+             radial-gradient(50% 50% at 80% 10%, rgba(200,255,77,.05), transparent 70%);
+  pointer-events:none}
+.hero .wrap{position:relative}
+.hero h1{font-size:clamp(40px,7.6vw,92px);line-height:.98;letter-spacing:-.05em;
+  margin:0 0 24px;max-width:15ch;font-weight:800}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:clamp(17px,2vw,20px);color:var(--gris);max-width:58ch;margin:0}
+.chiffres{display:flex;gap:44px;flex-wrap:wrap;margin-top:44px;
+  padding-top:26px;border-top:1px solid var(--trait)}
+.chiffre .v{font-size:30px;font-weight:800;letter-spacing:-.03em;
+  font-family:var(--mono)}
+.chiffre .l{font-size:12px;color:var(--gris-f);text-transform:uppercase;
+  letter-spacing:.1em;margin-top:2px}
+
+/* ---- LE CIEL ETOILE DU HERO --------------------------------------------
+   Il a demande « des etoiles dans le slider principal, comme une RR
+   Phantom » puis « Rooftop ». C'est le ciel etoile de Rolls-Royce : des
+   fibres optiques dans le PAVILLON, donc au PLAFOND. Les etoiles sont donc
+   denses en haut et s'eteignent vers le bas — un semis uniforme ferait un
+   fond spatial, pas un pavillon.
+
+   Aucune image : chaque etoile est un point CSS. Une photo de ciel pesant
+   400 Ko pour un effet qu'un dégradé et des points produisent est une
+   depense inutile sur la premiere chose que le visiteur telecharge. */
+.ciel{position:absolute;inset:0;overflow:hidden;pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 42%,transparent 88%);
+  mask-image:linear-gradient(180deg,#000 0%,#000 42%,transparent 88%)}
+.et{position:absolute;border-radius:50%;background:#fff;
+  animation:scintille var(--d) ease-in-out infinite alternate;
+  animation-delay:var(--r)}
+@keyframes scintille{from{opacity:var(--o1)}to{opacity:var(--o2)}}
+
+/* Quelques etoiles plus chaudes, comme les fibres qui ne sont pas toutes
+   du meme blanc. Sans ca l'effet est trop propre pour etre credible. */
+.et.chaud{background:#FFF3D6}
+.et.vert{background:var(--accent);box-shadow:0 0 6px rgba(200,255,77,.7)}
+
+/* apparition douce — desactivee si l'utilisateur ne veut pas d'animation */
+.monte{opacity:0;transform:translateY(14px);animation:monte .7s cubic-bezier(.2,.7,.3,1) forwards}
+.monte:nth-child(2){animation-delay:.06s}
+.monte:nth-child(3){animation-delay:.12s}
+@keyframes monte{to{opacity:1;transform:none}}
+
+/* ---- sections ---- */
+.sec{padding:64px 0}
+.sec-h{display:flex;align-items:baseline;gap:16px;margin-bottom:26px;flex-wrap:wrap}
+.sec-h h2{margin:0;font-size:clamp(23px,3.1vw,34px);letter-spacing:-.035em;
+  font-weight:800}
+.sec-h .plus{margin-left:auto;font-size:14px;text-decoration:none;font-weight:600}
+.oeil{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gris-f);display:block;margin-bottom:12px}
+h1.titre{font-size:clamp(29px,4.6vw,50px);letter-spacing:-.04em;margin:0 0 14px;
+  line-height:1.04;font-weight:800}
+.chapeau{color:var(--gris);max-width:70ch;margin:0;font-size:17px}
+.fil{font-size:13px;color:var(--gris-f);margin-bottom:18px;font-family:var(--mono)}
+.fil a{color:var(--gris-f);text-decoration:none}
+.fil a:hover{color:var(--txt)}
+
+/* ---- boutons ---- */
+.btn{display:inline-block;background:var(--accent);color:#0B1200;font-weight:800;
+  border:1px solid var(--accent);border-radius:999px;padding:13px 28px;
+  text-decoration:none;font-size:15px;letter-spacing:-.01em;
+  transition:transform .15s,background .15s}
+.btn:hover{background:var(--accent-f);transform:translateY(-1px)}
+/* En mode clair l'accent devient un vert FONCE : le texte presque noir du
+   bouton n'y tient plus le contraste (mesure : 3,63:1, en dessous du seuil
+   de 4,5:1). Il passe donc en blanc, ou il remonte a plus de 5:1.
+
+   LE :not(.btn-b) N'EST PAS DECORATIF. Le bouton secondaire porte les DEUX
+   classes (class="btn btn-b") et son fond est TRANSPARENT. Sans cette
+   exclusion, la regle ci-dessous — plus specifique que .btn-b — lui imposait
+   aussi le blanc : texte blanc sur fond blanc, bouton invisible en mode
+   clair. Trouve sur le site EN LIGNE, pas en local : le mode clair suit le
+   reglage du visiteur, et mes captures etaient en sombre. */
+:root[data-theme="light"] .btn:not(.btn-b){color:#fff}
+:root[data-theme="light"] .btn:not(.btn-b):hover{color:#fff}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]) .btn:not(.btn-b){color:#fff}
+  :root:not([data-theme]) .btn:not(.btn-b):hover{color:#fff}
+}
+.btn-b{background:transparent;color:var(--txt);border-color:var(--trait-f)}
+.btn-b:hover{background:var(--panneau2);color:var(--txt)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+
+/* ---- REVELATION AU DEFILEMENT ----------------------------------------
+   Ajoutee par le script en bas de page, et seulement si le visiteur accepte
+   les animations. L'element est visible par defaut : si le JavaScript ne
+   part pas, rien ne disparait. Un effet qui cache le contenu quand il
+   echoue n'est pas un effet, c'est une panne. */
+.rev{opacity:1}
+html.anime .rev{opacity:0;transform:translateY(22px);
+  transition:opacity .65s cubic-bezier(.2,.7,.3,1),
+             transform .65s cubic-bezier(.2,.7,.3,1)}
+html.anime .rev.vu{opacity:1;transform:none}
+
+/* Le trait qui se tire sous un lien de section */
+.plus{position:relative}
+.plus::after{content:"";position:absolute;left:0;right:100%;bottom:-3px;height:1px;
+  background:var(--accent);transition:right .3s cubic-bezier(.2,.7,.3,1)}
+.plus:hover::after{right:0}
+
+/* ---- travail ---- */
+.travail{display:grid;gap:18px}
+.proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:26px;
+  background:var(--panneau);border:1px solid var(--trait);border-radius:var(--r);
+  padding:30px;text-decoration:none;color:inherit;align-items:start;
+  transition:border-color .18s,transform .18s}
+.proj:hover{border-color:var(--accent);transform:translateY(-3px)}
+.proj h3{margin:0 0 10px;font-size:clamp(20px,2.4vw,27px);letter-spacing:-.03em;
+  font-weight:800}
+.proj p{margin:0;color:var(--gris);font-size:15.5px;max-width:60ch}
+.proj ul{margin:16px 0 0;padding-left:18px;color:var(--gris);font-size:14.5px}
+.proj li{margin-bottom:5px}
+.proj .meta{text-align:right}
+.proj .ctrl{font-family:var(--mono);font-size:30px;font-weight:800;
+  color:var(--accent);letter-spacing:-.03em}
+.proj .ctrl-l{font-size:11.5px;color:var(--gris-f);text-transform:uppercase;
+  letter-spacing:.1em}
+.proj .voir{display:inline-block;margin-top:14px;font-size:14px;color:var(--accent);
+  font-weight:600}
+
+/* ---- cartes ---- */
+.grille{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.carte{background:var(--panneau);border:1px solid var(--trait);border-radius:var(--r);
+  padding:24px;text-decoration:none;color:inherit;display:block;
+  transition:border-color .16s,transform .16s}
+a.carte:hover{border-color:var(--trait-f);transform:translateY(-2px)}
+.carte h3{margin:0 0 9px;font-size:17.5px;letter-spacing:-.02em;font-weight:700}
+.carte p{margin:0;color:var(--gris);font-size:14.5px}
+.carte .lg{color:var(--gris-f);font-size:12px;font-family:var(--mono)}
+.aussi{margin-top:12px !important;font-size:13px !important;color:var(--gris-f) !important}
+.num{font-family:var(--mono);font-size:12px;color:var(--accent);
+  letter-spacing:.1em;display:block;margin-bottom:9px}
+
+.tbd{display:inline-block;font-family:var(--mono);font-size:11px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ambre);
+  background:var(--ambre-c);border:1px solid var(--ambre-t);border-radius:999px;
+  padding:2px 10px;white-space:nowrap}
+
+.encadre{background:var(--panneau);border:1px solid var(--trait);
+  border-radius:var(--r);padding:24px}
+.encadre ul,.encadre ol{margin:0;padding-left:20px}
+.encadre li{margin-bottom:8px}
+.encadre--alerte{background:var(--rouge-c);border-color:var(--rouge-t)}
+.encadre--alerte b{color:var(--rouge)}
+.note{color:var(--gris-f);font-size:14px}
+
+.liste2{columns:2;gap:30px;margin:0;padding-left:20px;color:var(--gris)}
+.villes-liens{display:flex;flex-wrap:wrap;gap:8px}
+.villes-liens a{font-size:13.5px;background:var(--panneau);border:1px solid var(--trait);
+  border-radius:9px;padding:7px 13px;text-decoration:none;color:var(--gris)}
+.villes-liens a:hover{border-color:var(--accent);color:var(--txt)}
+
+.enroule{overflow-x:auto;border:1px solid var(--trait);border-radius:var(--r);
+  background:var(--panneau)}
+.tab{width:100%;border-collapse:collapse;font-size:14.5px}
+.tab th,.tab td{padding:13px 15px;border-bottom:1px solid var(--trait);text-align:left}
+.tab th{color:var(--gris-f);font-size:11px;text-transform:uppercase;
+  letter-spacing:.1em}
+.tab td.n,.tab th.n{text-align:right;font-family:var(--mono)}
+.tab tr.total td{background:var(--panneau2);border-bottom:0}
+.tab tbody tr:hover{background:var(--panneau2)}
+
+/* ---- bande finale ---- */
+.appel{background:linear-gradient(180deg,var(--noir2),var(--noir));
+  border-top:1px solid var(--trait);padding:74px 0}
+.appel h2{font-size:clamp(28px,4.6vw,52px);letter-spacing:-.045em;margin:0 0 16px;
+  font-weight:800;max-width:18ch}
+
+/* ---- WhatsApp ------------------------------------------------------------
+   Bouton flottant, et le NUMERO EN CLAIR a cote dans le pied de page. Un
+   bouton seul suppose que le visiteur a WhatsApp sur l'appareil qu'il tient ;
+   sur un ordinateur de bureau, souvent non. Le numero ecrit reste utilisable
+   par tout le monde. */
+.wa{position:fixed;right:20px;bottom:20px;z-index:60;display:flex;
+  align-items:center;gap:10px;background:#25D366;color:#04140A;
+  border-radius:999px;padding:13px 20px 13px 15px;text-decoration:none;
+  font-weight:700;font-size:15px;box-shadow:0 10px 30px -8px rgba(0,0,0,.55);
+  transition:transform .15s}
+.wa:hover{transform:translateY(-2px);color:#04140A}
+.wa svg{width:22px;height:22px;fill:currentColor;flex:0 0 22px}
+.wa .txt{white-space:nowrap}
+@media (max-width:620px){
+  .wa{right:14px;bottom:14px;padding:14px;border-radius:50%}
+  .wa .txt{display:none}
+}
+@media (prefers-reduced-motion:reduce){.wa{transition:none}.wa:hover{transform:none}}
+
+.pied{border-top:1px solid var(--trait);padding:34px 0 52px;
+  color:var(--gris-f);font-size:14px}
+.pied-liens{display:flex;gap:24px;flex-wrap:wrap;padding-bottom:18px;
+  border-bottom:1px solid var(--trait)}
+.pied-liens a{color:var(--gris);text-decoration:none}
+.pied-liens a:hover{color:var(--txt)}
+.pied a{color:var(--gris)}
+
+@media (max-width:980px){
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .proj{grid-template-columns:1fr}
+  .proj .meta{text-align:left}
+}
+@media (max-width:680px){
+  .hero{padding:58px 0 48px}
+  .sec{padding:44px 0}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .liste2{columns:1}
+  .nav{gap:16px;font-size:14px}
+  .chiffres{gap:26px}
+  html{scroll-padding-top:140px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .monte{animation:none;opacity:1;transform:none}
+  .proj,.carte,.btn{transition:none}
+  .proj:hover,a.carte:hover,.btn:hover{transform:none}
+  /* Les etoiles restent, elles ne clignotent plus. Retirer le ciel
+     entierement priverait ces visiteurs du dessin ; c'est le MOUVEMENT
+     qui gene, pas l'image. */
+  .et{animation:none;opacity:var(--o2)}
+  html.anime .rev{opacity:1;transform:none;transition:none}
+  .plus::after{transition:none}
+}
